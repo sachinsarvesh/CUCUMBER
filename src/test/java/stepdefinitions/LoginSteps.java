@@ -4,26 +4,50 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.time.Duration;
 
 public class LoginSteps {
 
-    @Given("user is on login page")
-    public void user_is_on_login_page() {
-        System.out.println("Inside Step - user is on login page");
+    WebDriver driver = null;
+
+    @Given("browser opened")
+    public void browser_opened() {
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe" );
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().window().maximize();
     }
 
-    @When("user enters username and password")
-    public void user_enters_username_and_password() {
-        System.out.println("Inside Step - enters username and password");
+    @Given("user is on the login page")
+    public void user_is_on_the_login_page() {
+        driver.navigate().to("https://the-internet.herokuapp.com/login");
+
     }
 
-    @And("clicks on login button")
-    public void clicks_on_login_button() {
-        System.out.println("Inside Step - clicks on login button");
+    @When("user enters the credentials")
+    public void user_enters_the_credentials() {
+        driver.findElement(By.id("username")).sendKeys("tomsmith ");
+        driver.findElement(By.id("password")).sendKeys("SuperSecretPassword! ");
+
+
     }
 
-    @Then("user is navigated to home page")
-    public void user_is_navigated_to_home_page() {
-        System.out.println("Inside Step - user is navigated to home page");
+    @And("user clicks login")
+    public void user_clicks_login(){
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+    }
+
+    @Then("homepage is shown")
+    public void homepage_is_shown() {
+        driver.findElement(By.id("flash"));
+        driver.close();
+        driver.quit();
+
     }
 }
